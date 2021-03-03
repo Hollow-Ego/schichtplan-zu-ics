@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Schichtplan zu ICS</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+
+<body>
+    <script src="src/pdf.js"></script>
+    <script src="src/pdf.worker.js"></script>
+    <script src="src/pdf.js"></script>
+    <script src="src/ics.deps.min.js"></script>
+    <script src="src/main.js" defer></script>
+
+    <div class="main-div">
+        <div class="input-div">
+            <div class="sub-div">
+                <label for="file-id">Wähle die PDF Datei</label>
+                <input type="file" id="file-id" name="file_name">
+            </div>
+            <div class="sub-div">
+                <div class="checkbox-div">
+                    <label for="single-event-cbx" class="container">
+                        <input type="checkbox" id="single-event-cbx" checked name="single_event">
+                        Arbeitszeiten als einzelnen Termin
+                        </input>
+                        <span class="checkmark"></span>
+                    </label>
+                    <label for="urlaub-cbx" class="container">
+                        <input type="checkbox" id="urlaub-cbx" checked name="single_event">
+                        Urlaub mit eintragen
+                        </input>
+                        <span class="checkmark"></span>
+                    </label>
+                    <label for="urlaub-title-input" class="hide show" id="urlaub-title-label">
+                        Und zwar als:
+                        <input type="text" id="urlaub-title-input" value="Urlaub">
+                    </label>
+                </div>
+                <div class="text-input-div">
+                    <label for="word-filter-input" class="hide" id="word-filter-label">
+                        Folgende Wörter rausfiltern (mit Kommatar separiert):
+                        <input type="text" id="word-filter-input" value="">
+                    </label>
+                    <label for="event-title-input" class="hide show" id="event-title-label">
+                        Arbeitstage folgendermaßen eintragen:
+                        <input type="text" id="event-title-input" value="Arbeit">
+                    </label>
+                    <label for="file-name-input">
+                        Folgenden Dateinnamen verwenden:
+                        <input type="text" id="file-name-input" value="dienstplan">
+                    </label>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div id="warning-div" class="warning-div">
+            <span>Keine gültige Schichtplandatei!</span>
+        </div>
+        <div class="control-div">
+            <button role="button" id="generate-ics-btn">Kalenderdatei generieren</button>
+        </div>
+    </div>
+</body>
+
+</html>
