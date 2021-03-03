@@ -4,6 +4,8 @@ Hinweis: Dieses Projekt folgt den [code null Vorgaben](https://github.com/code-n
 
 Dieses Programm extrahiert die Arbeitszeiten aus der eingegebenen PDF und erstellt daraus eine ics-Datei. Es wurde für ein bestimmtes Format entwickwelt, kann aber angepasst werden um für andere Formate zu funktionieren. Je vorhersehbarer und gleichbleibender die Struktur, desto einfacher.
 
+Da keine Abhängigkeit zu einem Webserver besteht, kann das Programm auch offline und/oder über das File-Protokoll genutzt werden.
+
 Der ausgegebene Dateiname kann frei gewählt werden. Die Schichten können als ein Termin (z.B.: 8:00 Uhr - 16:00 Uhr) oder als separtate Termine (z.B.: 8:00 Uhr - 13:00 Uhr Dienst A, 13:00 Uhr - 13:30 Uhr Pause) extrahiert werden. Bei einem Termin kann angegeben werden, wie diese benannt werden sollen, bei mehreren Terminen können bestimmte Wörter rausgefiltert werden. Weiterhin ist es möglich, den urlaub mit zu übertragen und dort ebenfalls anzugeben, wie dieser benannt werden soll.
 
 Aktuell wird von folgender Struktur ausgegangen:
