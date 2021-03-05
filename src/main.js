@@ -50,6 +50,7 @@ function createSingleEvent(pagesText) {
 	for (let pageNum = 1; pageNum < pagesText.length; pageNum++) {
 		rawText += `. ${pagesText[pageNum]}`;
 	}
+
 	const productiveTimesRaw = rawText.match(regexProductiveTimes);
 
 	if (!productiveTimesRaw) {
@@ -79,7 +80,7 @@ function createSingleEvent(pagesText) {
 				'',
 				'',
 				buildTimeString(date, '00:00'),
-				buildTimeString(date, '24:00')
+				buildTimeString(date, '00:00')
 			);
 		}
 	});
@@ -97,7 +98,9 @@ function createMultipleEvents(pagesText) {
 	for (let pageNum = 1; pageNum < pagesText.length; pageNum++) {
 		rawText += `. ${pagesText[pageNum]}`;
 	}
+
 	const productiveTimesRaw = rawText.match(regexCombined);
+
 	if (!productiveTimesRaw) {
 		warningDiv.classList.add('show');
 		return;
@@ -113,7 +116,7 @@ function createMultipleEvents(pagesText) {
 			const date = splitted[0].trim();
 			const urlaub = {
 				date,
-				events: [`${urlaubTitleInput.value.trim()} 00:00 24:00`],
+				events: [`${urlaubTitleInput.value.trim()} 00:00 00:00`],
 			};
 			collapsedTimes.push(urlaub);
 			return;
@@ -131,6 +134,12 @@ function createMultipleEvents(pagesText) {
 		}
 		carryOver.events.push(item);
 	});
+	// adds the last item to collapsed times, as it doesn't happen within the loop
+	// due to the given data structure you cannot tell the events apart
+	// alternative would be to do the stuff in the loop backwards
+	// then you would first add events and push once you reach either Urlaub or a matching regex
+	collapsedTimes.push(carryOver);
+
 	collapsedTimes.forEach(item => {
 		const date = item.date;
 		const events = item.events;
