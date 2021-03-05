@@ -31,7 +31,7 @@ In dem Fall, für den dieses Programm entwickelt wurde, werden die Tätigkeitsze
 ## Status
 
 Stage: Released
-Latest Stable Version: 1.0.0
+Latest Stable Version: 1.0.1
 
 ## Technical Details
 
