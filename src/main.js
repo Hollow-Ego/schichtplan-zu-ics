@@ -1,3 +1,4 @@
+const version = '1.1.0.0';
 const fileInput = document.getElementById('file-id');
 const generateICSBTN = document.getElementById('generate-ics-btn');
 const singleEventCbx = document.getElementById('single-event-cbx');
@@ -19,6 +20,11 @@ const regexProductiveTimes = /\d\d.\d\d.\d\d\d\d Urlaub | \d\d.\d\d.\d\d\d\d pro
 const regexSingleTimes = /\d\d:\d\d/g;
 const regexCombined = /\d\d.\d\d.\d\d\d\d Urlaub | \d\d.\d\d.\d\d\d\d produktiv \d\d:\d\d \d\d:\d\d | \w\w .*? \d\d:\d\d \d\d:\d\d/g;
 const regexUrlaubSingleCheck = /\d\d.\d\d.\d\d\d\d Urlaub/;
+
+document.querySelector('title').innerHTML += ` ${version}`;
+document.querySelector(
+	'#repo-link'
+).innerHTML += `Schichtplan zu ICS ${version} by Alexander Pahn `;
 
 fileInput.addEventListener('change', resetWarning);
 generateICSBTN.addEventListener('click', createICS);
