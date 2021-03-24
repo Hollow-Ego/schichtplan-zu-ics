@@ -6,9 +6,9 @@ Dieses Programm extrahiert die Arbeitszeiten aus der eingegebenen PDF und erstel
 
 Da keine Abhängigkeit zu einem Webserver besteht, kann das Programm auch offline und/oder über das File-Protokoll genutzt werden.
 
-Der ausgegebene Dateiname kann frei gewählt werden. Die Schichten können als ein Termin (z.B.: 8:00 Uhr - 16:00 Uhr) oder als separate Termine (z.B.: 8:00 Uhr - 13:00 Uhr Dienst A, 13:00 Uhr - 13:30 Uhr Pause) extrahiert werden. Bei einem Termin kann angegeben werden, wie diese benannt werden sollen, bei mehreren Terminen können bestimmte Wörter rausgefiltert werden. Weiterhin ist es möglich, den urlaub mit zu übertragen und dort ebenfalls anzugeben, wie dieser benannt werden soll.
+Der ausgegebene Dateiname kann frei gewählt werden. Die Schichten können als ein Termin (z.B.: 8:00 Uhr - 16:00 Uhr) oder als separate Termine (z.B.: 8:00 Uhr - 13:00 Uhr Dienst A, 13:00 Uhr - 13:30 Uhr Pause) extrahiert werden. Bei einem Termin kann angegeben werden, wie diese benannt werden sollen, bei mehreren Terminen können bestimmte Wörter rausgefiltert werden. Weiterhin ist es möglich, den Urlaub mit zu übertragen und dort ebenfalls anzugeben, wie dieser benannt werden soll.
 
-Aktuell wird von folgender Struktur ausgegangen:
+Aktuell wird von einer der folgenden Strukturen ausgegangen:
 
 > Datum Startzeit Endzeit
 >
@@ -26,13 +26,21 @@ Aktuell wird von folgender Struktur ausgegangen:
 >
 > Tätigkeitstart Tätigkeitende Tätigkeit
 
-In dem Fall, für den dieses Programm entwickelt wurde, werden die Tätigkeitszeilen umgekehrt ausgelesen. Bei einer Anpassung sollte dies daher berücksichtigt werden
+In dieser Struktur werden die Tätigkeitszeilen umgekehrt ausgelesen. Bei einer Anpassung sollte dies daher berücksichtigt werden
+
+> Datum Von Bis Tätigkeitsgruppe Tätigkeit
+>
+> Datum Von Bis Tätigkeitsgruppe Tätigkeit
+>
+> Datum Von Bis Tätigkeitsgruppe Tätigkeit
+
+In dieser Struktur wird, im Gegensatz zur Ersten, eine Unterscheidung zwischen Tätigkeit und Tätigkeitsgruppe getroffen.
 
 ## Status
 
 Stage: Released
 
-Latest Stable Version: 1.1.0.0
+Latest Stable Version: 1.2.0.0
 
 ## Technical Details
 
