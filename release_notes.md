@@ -1,5 +1,26 @@
 # Release Notes for Schichtplan zu ICS
 
+## Version 1.2.0.0
+
+- Unterstützung für eine zweite PDF-Struktur hinzugefügt
+- kleine optische Anpassungen
+
+### Neu
+
+- Zweite Struktur aus der PDF wird unterstützt
+
+### Verbessert
+
+Keine Verbesserungen
+
+### Bug Fixes
+
+keine Bugfixes
+
+### Sonstiges
+
+Keine
+
 ## Version 1.1.0.0
 
 - Bug-Fix und kleine optische Anpassung

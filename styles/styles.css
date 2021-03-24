@@ -1,18 +1,22 @@
 * {
-    --code-null-blue-hex: #5dadec;
-    --code-null-blue-light-hex: #5298d0;
-    --code-null-red-hex: #B94941;
-    --code-null-yellow-hex: #ffca28;
-    --code-null-medium-grey-hex: #323232;
-    --code-null-dark-grey-hex: #1b1b1b;
+    --cn-blue: #5dadec;
+    --cn-blue-secondary: #4974d6;
+    --cn-alert: #B94941;
+    --cn-warn: #ffca28;
+    --cn-medium-grey: #2c2c2c;
+    --cn-dark: #1b1b1b;
     font-family: sans-serif;
     font-size: 1.1rem;
 }
 
 body {
-    background-color: var(--code-null-dark-grey-hex);
+    background-color: var(--cn-dark);
     color: white;
     padding: .5rem;
+}
+
+h1 {
+    font-size: x-large;
 }
 
 .sub-div {
@@ -20,7 +24,7 @@ body {
     flex-direction: column;
     padding: 1rem;
     margin-bottom: 1rem;
-    background-color: var(--code-null-medium-grey-hex);
+    background-color: var(--cn-medium-grey);
     border-radius: .2rem;
 }
 
@@ -37,7 +41,6 @@ body {
     display: flex;
     flex-direction: column;
     border-radius: .2rem;
-    /* padding: 1rem; */
 }
 
 .text-input-div {
@@ -45,7 +48,7 @@ body {
 }
 
 .warning-div {
-    background-color: var(--code-null-red-hex);
+    background-color: var(--cn-alert);
     margin: 1rem 0;
     display: none;
     border-radius: .2rem;
@@ -72,7 +75,7 @@ input[type=text] {
 }
 
 button {
-    background-color: var(--code-null-blue-hex);
+    background-color: var(--cn-blue);
     color: #1b1b1b;
     padding: 1rem;
     border-radius: .2rem;
@@ -81,12 +84,20 @@ button {
 }
 
 button:active {
-    background-color: var(--code-null-blue-light-hex);
-    border: none
+    background-color: var(--cn-blue-secondary);
+    border: none;
+    color: white;
 }
 
 button:focus {
-    outline: none;
+    outline-color: var(--cn-blue-secondary);
+    border: none;
+}
+
+button:hover {
+    background-color: var(--cn-blue-secondary);
+    color: white;
+    cursor: pointer;
 }
 
 .branding {
@@ -148,7 +159,7 @@ a {
 /* When the checkbox is checked, add a blue background */
 
 .container input:checked~.checkmark {
-    background-color: var(--code-null-blue-hex);
+    background-color: var(--cn-blue);
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -177,4 +188,11 @@ a {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+@media(max-width:1000px) {
+    .main-div {
+        max-width: 95%;
+        margin: auto;
+    }
 }

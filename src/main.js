@@ -1,4 +1,4 @@
-const version = '1.1.0.0';
+const version = '1.2.0.0';
 const fileInput = document.getElementById('file-id');
 const generateICSBTN = document.getElementById('generate-ics-btn');
 const singleEventCbx = document.getElementById('single-event-cbx');
@@ -16,10 +16,51 @@ const urlaubCbx = document.getElementById('urlaub-cbx');
 const urlaubTitleInput = document.getElementById('urlaub-title-input');
 const urlaubTitleLabel = document.getElementById('urlaub-title-label');
 
-const regexProductiveTimes = /\d\d.\d\d.\d\d\d\d Urlaub | \d\d.\d\d.\d\d\d\d produktiv \d\d:\d\d \d\d:\d\d/g;
-const regexSingleTimes = /\d\d:\d\d/g;
-const regexCombined = /\d\d.\d\d.\d\d\d\d Urlaub | \d\d.\d\d.\d\d\d\d produktiv \d\d:\d\d \d\d:\d\d | \w\w .*? \d\d:\d\d \d\d:\d\d/g;
-const regexUrlaubSingleCheck = /\d\d.\d\d.\d\d\d\d Urlaub/;
+const dateRegex = new RegExp(/\d\d\.\d\d\.\d\d\d?\d?/, 'g');
+const timeRegex = new RegExp(/\d\d\:\d\d/, 'g');
+const holidayString = ' Urlaub ';
+const regexUrlaubSingleCheck = new RegExp(dateRegex.source + holidayString);
+
+// A unique key word, that is present in origin 1
+const origin1Identifier = 'Pepgruppe und An-/Abwesenheit';
+// Use this variable to add an active switch (e.g. a radio button, checkbox, condition to compute)
+let originSwitch = false;
+
+const regexProductiveTimesOrigin1 = new RegExp(
+	regexUrlaubSingleCheck.source +
+		'|' +
+		dateRegex.source +
+		' produktiv ' +
+		timeRegex.source +
+		timeRegex.source,
+	'gm'
+);
+
+const regexCombinedOrigin1 = new RegExp(
+	dateRegex.source +
+		regexUrlaubSingleCheck.source +
+		'|' +
+		dateRegex.source +
+		'produktiv' +
+		timeRegex.source +
+		' ' +
+		timeRegex.source +
+		'| ww .*? ' +
+		timeRegex.source +
+		timeRegex.source,
+	'gm'
+);
+
+const regexCombinedOrigin2 = new RegExp(
+	dateRegex.source +
+		' ' +
+		timeRegex.source +
+		' ' +
+		timeRegex.source +
+		' [a-zA-Z\\s]+-?\\/?[a-zA-Z\\s]+|' +
+		regexUrlaubSingleCheck.source,
+	'gm'
+);
 
 document.querySelector('title').innerHTML += ` ${version}`;
 document.querySelector(
@@ -57,40 +98,85 @@ function createSingleEvent(pagesText) {
 		rawText += `. ${pagesText[pageNum]}`;
 	}
 
-	const productiveTimesRaw = rawText.match(regexProductiveTimes);
+	const productiveTimesOrigin1 = rawText.match(regexProductiveTimesOrigin1);
+	const origin1 = isOrigin1(rawText);
 
-	if (!productiveTimesRaw) {
-		warningDiv.classList.add('show');
+	if (productiveTimesOrigin1 && origin1) {
+		productiveTimesOrigin1.forEach(item => {
+			if (item.match('produktiv')) {
+				const splitted = item.split('produktiv');
+				const date = splitted[0];
+				const [start, end] = splitted[1].trim().split(' ');
+
+				cal.addEvent(
+					eventTitleInput.value.trim(),
+					'',
+					'',
+					buildTimeString(date, start),
+					buildTimeString(date, end)
+				);
+			} else if (item.includes(holidayString) && urlaubCbx.checked) {
+				const splitted = item.split(holidayString);
+				const date = splitted[0];
+
+				cal.addEvent(
+					urlaubTitleInput.value.trim(),
+					'',
+					'',
+					buildTimeString(date, '00:00'),
+					buildTimeString(date, '00:00')
+				);
+			}
+		});
+		cal.download(filename);
 		return;
 	}
 
-	productiveTimesRaw.forEach(item => {
-		if (item.match('produktiv')) {
-			const splitted = item.split('produktiv');
-			const date = splitted[0];
-			const [start, end] = splitted[1].trim().split(' ');
+	const productiveTimesOrigin2 = rawText.match(regexCombinedOrigin2);
 
+	if (productiveTimesOrigin2) {
+		const calenderCollection = {};
+		productiveTimesOrigin2.forEach(item => {
+			console.dir(item);
+
+			const [date] = item.match(dateRegex);
+			const dateKey = date.replaceAll('.', '');
+			if (item.includes(holidayString) && urlaubCbx.checked) {
+				calenderCollection[dateKey] = {};
+				calenderCollection[dateKey].date = date;
+				calenderCollection[dateKey].start = '00:00';
+				calenderCollection[dateKey].end = '00:00';
+				calenderCollection[dateKey].title = urlaubTitleInput.value.trim();
+			} else {
+				const [start, end] = item.match(timeRegex);
+				if (!calenderCollection[dateKey]) {
+					calenderCollection[dateKey] = {};
+					calenderCollection[dateKey].date = date;
+					calenderCollection[dateKey].start = start;
+					calenderCollection[dateKey].end = end;
+					calenderCollection[dateKey].title = eventTitleInput.value.trim();
+					return;
+				}
+
+				calenderCollection[dateKey].end = end;
+			}
+		});
+		Object.entries(calenderCollection).forEach(element => {
+			const { date, start, end, title } = element[1];
 			cal.addEvent(
-				eventTitleInput.value.trim(),
+				title,
 				'',
 				'',
 				buildTimeString(date, start),
 				buildTimeString(date, end)
 			);
-		} else if (item.includes('Urlaub') && urlaubCbx.checked) {
-			const splitted = item.split('Urlaub');
-			const date = splitted[0];
+		});
 
-			cal.addEvent(
-				urlaubTitleInput.value.trim(),
-				'',
-				'',
-				buildTimeString(date, '00:00'),
-				buildTimeString(date, '00:00')
-			);
-		}
-	});
-	cal.download(filename);
+		cal.download(filename);
+		return;
+	}
+
+	warningDiv.classList.add('show');
 }
 
 function createMultipleEvents(pagesText) {
@@ -105,65 +191,102 @@ function createMultipleEvents(pagesText) {
 		rawText += `. ${pagesText[pageNum]}`;
 	}
 
-	const productiveTimesRaw = rawText.match(regexCombined);
+	const productiveTimesOrigin1 = rawText.match(regexCombinedOrigin1);
+	const origin1 = rawText.includes(origin1Identifier);
 
-	if (!productiveTimesRaw) {
-		warningDiv.classList.add('show');
-		return;
-	}
-	const collapsedTimes = [];
-	let carryOver;
-	productiveTimesRaw.forEach(item => {
-		if (item.includes('Urlaub')) {
-			if (!urlaubCbx.checked || !item.match(regexUrlaubSingleCheck)) {
+	if (productiveTimesOrigin1 && origin1) {
+		const collapsedTimes = [];
+		let carryOver;
+		productiveTimesOrigin1.forEach(item => {
+			if (item.includes(holidayString)) {
+				if (!urlaubCbx.checked || !item.match(regexUrlaubSingleCheck)) {
+					return;
+				}
+				const splitted = item.split('Urlaub');
+				const date = splitted[0].trim();
+				const urlaub = {
+					date,
+					events: [`${urlaubTitleInput.value.trim()} 00:00 00:00`],
+				};
+				collapsedTimes.push(urlaub);
 				return;
 			}
-			const splitted = item.split('Urlaub');
-			const date = splitted[0].trim();
-			const urlaub = {
-				date,
-				events: [`${urlaubTitleInput.value.trim()} 00:00 00:00`],
-			};
-			collapsedTimes.push(urlaub);
-			return;
-		}
-		if (item.match(regexProductiveTimes)) {
-			if (carryOver) {
-				collapsedTimes.push(carryOver);
+			if (item.match(regexProductiveTimesOrigin1)) {
+				if (carryOver) {
+					collapsedTimes.push(carryOver);
+				}
+				carryOver = {};
+				carryOver.events = [];
+				const splitted = item.split('produktiv');
+				const date = splitted[0].trim();
+				carryOver.date = date;
+				return;
 			}
-			carryOver = {};
-			carryOver.events = [];
-			const splitted = item.split('produktiv');
-			const date = splitted[0].trim();
-			carryOver.date = date;
-			return;
-		}
-		carryOver.events.push(item);
-	});
-	// adds the last item to collapsed times, as it doesn't happen within the loop
-	// due to the given data structure you cannot tell the events apart
-	// alternative would be to do the stuff in the loop backwards
-	// then you would first add events and push once you reach either Urlaub or a matching regex
-	collapsedTimes.push(carryOver);
-
-	collapsedTimes.forEach(item => {
-		const date = item.date;
-		const events = item.events;
-
-		events.forEach(eventString => {
-			// due to how the text is extracted, the start and end date were switched
-			const [end, start] = eventString.match(regexSingleTimes);
-			const [eventName] = eventString.split(regexSingleTimes);
-			cal.addEvent(
-				eventName.trim().replaceAll(filterText, '').trim(),
-				eventName.trim().replaceAll(filterText, '').trim(),
-				'',
-				buildTimeString(date, start),
-				buildTimeString(date, end)
-			);
+			carryOver.events.push(item);
 		});
-	});
-	cal.download(filename);
+		// adds the last item to collapsed times, as it doesn't happen within the loop
+		// due to the given data structure you cannot tell the events apart
+		// alternative would be to do the stuff in the loop backwards
+		// then you would first add events and push once you reach either Urlaub or a matching regex
+		collapsedTimes.push(carryOver);
+
+		collapsedTimes.forEach(item => {
+			const date = item.date;
+			const events = item.events;
+
+			events.forEach(eventString => {
+				// due to how the text is extracted, the start and end date were switched
+				const [end, start] = eventString.match(timeRegex);
+				const [eventName] = eventString.split(timeRegex);
+				cal.addEvent(
+					eventName.trim().replaceAll(filterText, '').trim(),
+					eventName.trim().replaceAll(filterText, '').trim(),
+					'',
+					buildTimeString(date, start),
+					buildTimeString(date, end)
+				);
+			});
+		});
+		cal.download(filename);
+	}
+
+	const productiveTimesOrigin2 = rawText.match(regexCombinedOrigin2);
+
+	if (productiveTimesOrigin2) {
+		const splitRegEx = /[a-zA-Z\s]+-?\/?[a-zA-Z\s]+/g;
+		productiveTimesOrigin2.forEach(item => {
+			const [date] = item.match(dateRegex);
+			if (item.includes(holidayString) && urlaubCbx.checked) {
+				cal.addEvent(
+					urlaubTitleInput.value.trim(),
+					'',
+					'',
+					buildTimeString(date, '00:00'),
+					buildTimeString(date, '00:00')
+				);
+			} else {
+				const [start, end] = item.match(timeRegex);
+				const [eventName] = item.match(splitRegEx);
+
+				cal.addEvent(
+					eventName.trim().replaceAll(filterText, '').trim(),
+					eventName.trim().replaceAll(filterText, '').trim(),
+					'',
+					buildTimeString(date, start),
+					buildTimeString(date, end)
+				);
+			}
+		});
+		cal.download(filename);
+		return;
+	}
+
+	warningDiv.classList.add('show');
+	return;
+}
+
+function isOrigin1(rawText) {
+	return rawText.includes(origin1Identifier) || originSwitch;
 }
 
 // expects format dd.mm.yyyy
