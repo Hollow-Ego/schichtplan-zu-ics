@@ -1,5 +1,25 @@
 # Release Notes for Schichtplan zu ICS
 
+## Version 1.2.1.0
+
+- Bug fix für defektes Regex
+
+### Neu
+
+Keine neuen Funktionen
+
+### Verbessert
+
+Keine Verbesserungen
+
+### Bug Fixes
+
+- Regex für origin 1 (ursprüngliches Format) war falsch und wurde nun korrigiert
+
+### Sonstiges
+
+Keine
+
 ## Version 1.2.0.0
 
 - Unterstützung für eine zweite PDF-Struktur hinzugefügt
@@ -15,7 +35,7 @@ Keine Verbesserungen
 
 ### Bug Fixes
 
-keine Bugfixes
+Keine Bugfixes
 
 ### Sonstiges
 

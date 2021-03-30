@@ -40,7 +40,7 @@ In dieser Struktur wird, im Gegensatz zur Ersten, eine Unterscheidung zwischen T
 
 Stage: Released
 
-Latest Stable Version: 1.2.0.0
+Latest Stable Version: 1.2.1.0
 
 ## Technical Details
 

@@ -1,4 +1,4 @@
-const version = '1.2.0.0';
+const version = '1.2.1.0';
 const fileInput = document.getElementById('file-id');
 const generateICSBTN = document.getElementById('generate-ics-btn');
 const singleEventCbx = document.getElementById('single-event-cbx');
@@ -32,21 +32,22 @@ const regexProductiveTimesOrigin1 = new RegExp(
 		dateRegex.source +
 		' produktiv ' +
 		timeRegex.source +
+		' ' +
 		timeRegex.source,
 	'gm'
 );
 
 const regexCombinedOrigin1 = new RegExp(
-	dateRegex.source +
-		regexUrlaubSingleCheck.source +
+	regexUrlaubSingleCheck.source +
 		'|' +
 		dateRegex.source +
-		'produktiv' +
+		' produktiv ' +
 		timeRegex.source +
 		' ' +
 		timeRegex.source +
-		'| ww .*? ' +
+		' | [a-zA-Z\\s]+-?\\/?[a-zA-Z\\s]+' +
 		timeRegex.source +
+		' ' +
 		timeRegex.source,
 	'gm'
 );
@@ -137,8 +138,6 @@ function createSingleEvent(pagesText) {
 	if (productiveTimesOrigin2) {
 		const calenderCollection = {};
 		productiveTimesOrigin2.forEach(item => {
-			console.dir(item);
-
 			const [date] = item.match(dateRegex);
 			const dateKey = date.replaceAll('.', '');
 			if (item.includes(holidayString) && urlaubCbx.checked) {
@@ -192,8 +191,8 @@ function createMultipleEvents(pagesText) {
 	}
 
 	const productiveTimesOrigin1 = rawText.match(regexCombinedOrigin1);
-	const origin1 = rawText.includes(origin1Identifier);
-
+	const origin1 = isOrigin1(rawText);
+	console.dir(regexCombinedOrigin1);
 	if (productiveTimesOrigin1 && origin1) {
 		const collapsedTimes = [];
 		let carryOver;
@@ -229,6 +228,7 @@ function createMultipleEvents(pagesText) {
 		// alternative would be to do the stuff in the loop backwards
 		// then you would first add events and push once you reach either Urlaub or a matching regex
 		collapsedTimes.push(carryOver);
+		console.dir(collapsedTimes);
 
 		collapsedTimes.forEach(item => {
 			const date = item.date;
@@ -248,6 +248,7 @@ function createMultipleEvents(pagesText) {
 			});
 		});
 		cal.download(filename);
+		return;
 	}
 
 	const productiveTimesOrigin2 = rawText.match(regexCombinedOrigin2);
